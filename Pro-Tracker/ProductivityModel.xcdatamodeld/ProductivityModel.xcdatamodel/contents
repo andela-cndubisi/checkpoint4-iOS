@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="15B42" minimumToolsVersion="Xcode 7.0">
+    <entity name="Location" representedClassName=".Location" syncable="YES">
+        <attribute name="address" attributeType="String" syncable="YES"/>
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" syncable="YES"/>
+        <relationship name="productivity" maxCount="1" deletionRule="Nullify" destinationEntity="Productivity" inverseName="location" inverseEntity="Productivity" syncable="YES"/>
+    </entity>
+    <entity name="Productivity" representedClassName=".Productivity" syncable="YES">
+        <attribute name="date" attributeType="Date" syncable="YES"/>
+        <relationship name="location" toMany="YES" deletionRule="Nullify" destinationEntity="Location" inverseName="productivity" inverseEntity="Location" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Location" positionX="16" positionY="-40" width="128" height="103"/>
+        <element name="Productivity" positionX="-198" positionY="-10" width="128" height="73"/>
+    </elements>
+</model>
