@@ -3,7 +3,7 @@
 //  CircularSlider
 //
 //  Created by Chijioke Ndubisi on 08/12/2015.
-//  Copyright © 2015 andela-cj. All rights reserved.
+//  Copyright © 2015 cjay. All rights reserved.
 //
 
 import Foundation
@@ -11,23 +11,52 @@ import UIKit
 
 public class CircularSlider: UIControl, SliderInformation{
 
-    private var startAngle:CGFloat = 0
-    private var endAngle:CGFloat = CGFloat( 2*M_PI )
-    private var currentValue:Double!
+    /// Slider's thumb
+    var thumb:Knob<CircularSlider>!{
+        didSet{
+            oldValue.removeFromSuperlayer()
+            layer.addSublayer(thumb)
+        }
+    }
 
+    /**
+     Start angle of Sliders, angle is in radians
+     detault is 0
+     */
+    var startAngle:CGFloat = 0
+    
+    /**
+     Ending angle of Sliders, angle is in radians
+     detault is 2π
+     */
+    var endAngle:CGFloat = CGFloat( 2*M_PI )
+    
+    /// Value of Slider
+    var currentValue:Double!
+    
+    /// Color of Slider's track
     var trackColor = UIColor.lightGrayColor() {
         didSet {
             setNeedsDisplay()
         }
     }
-
     
+    /** Color of Slider's inner circle */
     var fillColor = UIColor.clearColor(){
         didSet{
             setNeedsDisplay()
         }
     }
     
+    /**
+     Create a new Circular Slider with a new SliderInformation and
+     assigns it's delegate to this
+     
+     - parameter frame: the bounding frame of the Slider
+     - parameter currentValue: initial value to the Slider
+     - parameter minimumValue: minimum value of the Slider
+     - parameter maximumValue: maximumValue of the Slider
+     */
     init(frame:CGRect, currentValue:Double, minimumValue:Double, maximumValue:Double ){
         super.init(frame: frame)
         self.minimumValue = minimumValue
@@ -39,13 +68,13 @@ public class CircularSlider: UIControl, SliderInformation{
         backgroundColor = UIColor.clearColor()
         layer.addSublayer(thumb)
     }
+    
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     public override func drawRect(rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
-
 
         CGContextSaveGState(context)
         // Flip Context Coordinate System to UIKit's
@@ -62,15 +91,14 @@ public class CircularSlider: UIControl, SliderInformation{
         CGContextDrawPath(context, .Stroke)
         
         // Draw Progress Track
-        let angle = toRadians(valueToAngle(minimumValue))
+        let angle = valueToAngle(minimumValue)
         CGContextSetLineWidth(context, 4)
         CGContextSetStrokeColorWithColor(context,thumb.strokeColor.CGColor)
         CGContextAddArc(context, bounds.midX, bounds.midY, radius, CGFloat(angle), CGFloat(currentAngle), 1)
         CGContextStrokePath(context)
+        // Flip Context to Original Quartz Coordinate System
         CGContextRestoreGState(context)
         
-        thumb.updatePosition()
-
         // Fill Center
         CGContextSaveGState(context)
         CGContextSetFillColorWithColor(context, fillColor.CGColor)
@@ -85,7 +113,6 @@ public class CircularSlider: UIControl, SliderInformation{
         paragraphStyle.alignment = .Left
         let attributes = [ NSFontAttributeName :  UIFont.systemFontOfSize(radius, weight: UIFontWeightThin), NSForegroundColorAttributeName: UIColor.whiteColor(), NSParagraphStyleAttributeName : paragraphStyle ]
         string.drawAtPoint(CGPointMake(ellipse.midX - ellipse.origin.x, ellipse.midY -  ellipse.origin.y), withAttributes: attributes)
-        string.drawInRect(ellipse, withAttributes: attributes)
     }
     
     public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
@@ -109,15 +136,12 @@ public class CircularSlider: UIControl, SliderInformation{
         return true
     }
 
+    // MARK: Slider Information Protocol Implementation
     
-    // MARK: -
-    // MARK: SliderInformation Protocol
-    
-    var thumb:Knob<CircularSlider>!
-    var trackWidth:CGFloat = 10
-    var radius:CGFloat!{ return max(bounds.midX, bounds.midY) - trackWidth/2 }
-    var currentAngle:Double! { return toRadians(valueToAngle(value)) }
-    var value:Double!{
+    public var trackWidth:CGFloat = 10
+    public var radius:CGFloat!{ return max(bounds.midX, bounds.midY) - trackWidth/2 }
+    public var currentAngle:Double! { return valueToAngle(value) }
+    public var value:Double!{
         get{
             return currentValue
         }
@@ -131,10 +155,15 @@ public class CircularSlider: UIControl, SliderInformation{
             }
             sendActionsForControlEvents(.ValueChanged)
             setNeedsDisplay()
+            if let thumb = thumb {
+                thumb.updatePosition()
+            }
+
         }
+        
     }
 
-    var maximumValue = 0.0 {
+    public var maximumValue = 0.0 {
         didSet(value){
             if ( value != maximumValue ){
                 if (minimumValue > maximumValue) { maximumValue = minimumValue }
@@ -142,7 +171,7 @@ public class CircularSlider: UIControl, SliderInformation{
         }
     }
     
-    var minimumValue = 1.0 {
+    public var minimumValue = 1.0 {
         didSet (value) {
             if (value !=  minimumValue){
                 if (value > maximumValue) { maximumValue = minimumValue }
@@ -152,21 +181,28 @@ public class CircularSlider: UIControl, SliderInformation{
     }
 
     
-    func valueToAngle(value:Double) -> Double{
+    public func valueToAngle(value:Double) -> Double{
         let v = value / maximumValue
-        return abs(v) * -360 + 90  // add 90 to make north
+        let valueInDegrees = v * -360 + 90
+        return  toRadians(valueInDegrees) // add 90 to make north
     }
     
-    let toDegrees = { x in return x * 180 / M_PI }
-    let toRadians = { x in return x * M_PI / 180 }
+    private let toDegrees = { x in return x * 180 / M_PI }
+    private let toRadians = { x in return x * M_PI / 180 }
 }
 
-class Knob<T: SliderInformation>: CALayer {
+public class Knob<T: SliderInformation>: CALayer {
     typealias Control = T
-    
+    /// Color of the knob
     var fillColor = UIColor.blueColor()
+    /// Color of the slider's progress
     var strokeColor = UIColor.redColor()
+    /// diameter of
     var horizontalLength:CGFloat! { return slider.radius * 0.15 }
+    /**
+     knob Delegate
+     Delegate must implement SliderInformation Protocol
+     */
     var slider:Control! {
         didSet{
             let location = positionInRect()
@@ -179,7 +215,7 @@ class Knob<T: SliderInformation>: CALayer {
         super.init()
     }
     
-    override func drawInContext(ctx: CGContext) {
+    public override func drawInContext(ctx: CGContext) {
         UIGraphicsPushContext(ctx)
         fillColor.setFill()
         let path = UIBezierPath(roundedRect: bounds, cornerRadius: bounds.height/2 )
@@ -188,6 +224,9 @@ class Knob<T: SliderInformation>: CALayer {
         UIGraphicsPopContext()
     }
     
+    /**
+     Updates position within the bound of Delegate
+     */
     func updatePosition(){
         CATransaction.begin()
         CATransaction.setDisableActions(true)
@@ -210,13 +249,22 @@ class Knob<T: SliderInformation>: CALayer {
     }
 }
 
+// MARK: -
+// MARK: Slider Information Protocol
 
-protocol SliderInformation{
+public protocol SliderInformation {
+    /// Current value of slider
     var value:Double! {get set}
+    /// maximumValue of Slider
     var maximumValue:Double {get set}
+    /// minimum value of Slider
     var minimumValue:Double {get set}
+    /// Current angle in radians
     var currentAngle:Double! { get }
+    /// radius of the Slider
     var radius:CGFloat! {get}
+    /// widht of the Slider's track not the progress
     var trackWidth:CGFloat {get set}
+    /// converts current value to and angle in radians
     func valueToAngle(value:Double) -> Double
 }

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2F2049FD1C2C06C900EDADC2 /* CircularSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F2049FC1C2C06C900EDADC2 /* CircularSlider.swift */; };
-		2FB263871C11A37700438795 /* seeker.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2FB263861C11A37700438795 /* seeker.xib */; };
 		2FEEBED71C10784C002383D1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FEEBED61C10784C002383D1 /* AppDelegate.swift */; };
 		2FEEBEDC1C10784D002383D1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2FEEBEDA1C10784D002383D1 /* Main.storyboard */; };
 		2FEEBEDE1C10784D002383D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2FEEBEDD1C10784D002383D1 /* Assets.xcassets */; };
@@ -38,7 +37,6 @@
 
 /* Begin PBXFileReference section */
 		2F2049FC1C2C06C900EDADC2 /* CircularSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularSlider.swift; sourceTree = "<group>"; };
-		2FB263861C11A37700438795 /* seeker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = seeker.xib; sourceTree = "<group>"; };
 		2FEEBED31C10784C002383D1 /* Pro-Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pro-Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FEEBED61C10784C002383D1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2FEEBEDB1C10784D002383D1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -81,7 +79,6 @@
 		2FEEBECA1C10784C002383D1 = {
 			isa = PBXGroup;
 			children = (
-				2FB263861C11A37700438795 /* seeker.xib */,
 				2FEEBED51C10784C002383D1 /* Pro-Tracker */,
 				2FEEBEEA1C10784D002383D1 /* Pro-TrackerTests */,
 				2FEEBED41C10784C002383D1 /* Products */,
@@ -222,7 +219,6 @@
 			files = (
 				2FEEBEE11C10784D002383D1 /* LaunchScreen.storyboard in Resources */,
 				2FEEBEDE1C10784D002383D1 /* Assets.xcassets in Resources */,
-				2FB263871C11A37700438795 /* seeker.xib in Resources */,
 				2FEEBEDC1C10784D002383D1 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

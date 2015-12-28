@@ -3,7 +3,7 @@
 //  pro-tracker
 //
 //  Created by Chijioke Ndubisi on 27/11/2015.
-//  Copyright © 2015 andela-cj. All rights reserved.
+//  Copyright © 2015 cjay. All rights reserved.
 //
 
 import Foundation

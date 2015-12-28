@@ -3,7 +3,7 @@
 //  Pro-TrackerTests
 //
 //  Created by Chijioke Ndubisi on 03/12/2015.
-//  Copyright © 2015 andela-cj. All rights reserved.
+//  Copyright © 2015 cjay. All rights reserved.
 //
 
 import XCTest
