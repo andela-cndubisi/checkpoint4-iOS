@@ -36,6 +36,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         }
     }
     
+    var intervalToSave:Int!
     var locationManager:CLLocationManager!
 
     
@@ -50,14 +51,15 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
             timeTracker.resume()
         }
     }
-    
-    // MARK - 
+    // MARK -
     // MARK: TimeTrackerDelegate
     func handleTime(milliseconds:Double){
+        //calculate the minutes in elapsed time.
         var elapsedTime = milliseconds
-        let minutes = UInt8(elapsedTime / 60.0) //calculate the minutes in elapsed time.
+        let minutes = UInt8(elapsedTime / 60.0)
+        //calculate the seconds in elapsed time.
         elapsedTime -= (NSTimeInterval(minutes) * 60)
-        let seconds = UInt32(elapsedTime)   //calculate the seconds in elapsed time.
+        let seconds = UInt32(elapsedTime)
         elapsedTime -= NSTimeInterval(seconds)
         //find out the fraction of milliseconds to be displayed.
         secondsLabel.text = String(format: "%02d", seconds)
@@ -77,6 +79,8 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         recordedLocations.layer.cornerRadius = 20
         
         // setup LocationManager
+        locationManager = appDelegate().locationManager
+        locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
     }
@@ -92,7 +96,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         if currentLocation == nil {
             currentLocation = locations.last!
         }
-        if timeTracker.hasReachedMax(getInterval()) && !hasSavedLocation {
+        if timeTracker.hasReachedMax(intervalToSave) && !hasSavedLocation {
             recordedLocationsCount++
             hasSavedLocation = true
         }

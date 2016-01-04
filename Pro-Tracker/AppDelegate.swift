@@ -57,7 +57,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let manager = CLLocationManager()
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.distanceFilter  = kCLLocationAccuracyBest
-        manager.requestAlwaysAuthorization()
         return manager
     }()
     

@@ -18,6 +18,7 @@ public class CircularSlider: UIControl, SliderInformation{
             layer.addSublayer(thumb)
         }
     }
+    
 
     /**
      Start angle of Sliders, angle is in radians
@@ -47,7 +48,7 @@ public class CircularSlider: UIControl, SliderInformation{
             setNeedsDisplay()
         }
     }
-    
+
     /**
      Create a new Circular Slider with a new SliderInformation and
      assigns it's delegate to this
@@ -156,7 +157,7 @@ public class CircularSlider: UIControl, SliderInformation{
             sendActionsForControlEvents(.ValueChanged)
             setNeedsDisplay()
             if let thumb = thumb {
-                thumb.updatePosition()
+                thumb.setNeedsDisplay()
             }
 
         }
@@ -180,7 +181,6 @@ public class CircularSlider: UIControl, SliderInformation{
         }
     }
 
-    
     public func valueToAngle(value:Double) -> Double{
         let v = value / maximumValue
         let valueInDegrees = v * -360 + 90
@@ -199,10 +199,7 @@ public class Knob<T: SliderInformation>: CALayer {
     var strokeColor = UIColor.redColor()
     /// diameter of
     var horizontalLength:CGFloat! { return slider.radius * 0.15 }
-    /**
-     knob Delegate
-     Delegate must implement SliderInformation Protocol
-     */
+    /// knob Delegate must implement SliderInformation Protocol
     var slider:Control! {
         didSet{
             let location = positionInRect()
@@ -216,6 +213,7 @@ public class Knob<T: SliderInformation>: CALayer {
     }
     
     public override func drawInContext(ctx: CGContext) {
+        updatePosition()
         UIGraphicsPushContext(ctx)
         fillColor.setFill()
         let path = UIBezierPath(roundedRect: bounds, cornerRadius: bounds.height/2 )
@@ -224,9 +222,7 @@ public class Knob<T: SliderInformation>: CALayer {
         UIGraphicsPopContext()
     }
     
-    /**
-     Updates position within the bound of Delegate
-     */
+    /// Updates position within the bound of Delegate
     func updatePosition(){
         CATransaction.begin()
         CATransaction.setDisableActions(true)

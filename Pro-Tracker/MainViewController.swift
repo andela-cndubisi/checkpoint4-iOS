@@ -9,27 +9,25 @@
 import UIKit
 import CoreLocation
 
-private var interval = 1
-
-func getInterval() -> Int{
-    return interval
-}
-
-class MainViewController: UIViewController, UIAlertViewDelegate{
+class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManagerDelegate{
+    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var intervalSettingsButton: UIButton!
+    
     var setting = false
     let KEY = "INTERVAL"
     var startButton:UIButton!
     var slider:CircularSlider!
+    private var interval = 5 {
+        didSet{
+            if !setting {
+                intervalSettingsButton.setTitle("\(interval) minutes", forState: .Normal)
+            }
+        }
+    }
 
-
-    @IBOutlet weak var containerView: UIView!
-    
     @IBAction func setInterval(sender: UIButton) {
 
         let userDefault = NSUserDefaults.standardUserDefaults()
-        userDefault.setInteger(5, forKey: KEY)
-        userDefault.synchronize()
         
         if !setting {
             UIView.transitionFromView(startButton, toView: slider, duration: 0.3, options: .TransitionFlipFromTop, completion: nil)
@@ -38,15 +36,19 @@ class MainViewController: UIViewController, UIAlertViewDelegate{
         }else {
             UIView.transitionFromView(slider, toView: startButton, duration: 0.3, options: .TransitionFlipFromBottom, completion: nil)
             setting = !setting
-            let interval = slider.value
-            sender.setTitle("\(Int(interval)) minutes", forState: .Normal)
+            interval = Int(slider.value)
+            sender.setTitle("\(interval) minutes", forState: .Normal)
+            userDefault.setInteger(interval, forKey: KEY)
+            userDefault.synchronize()
         }
     }
-
     @IBAction func beginTracking(sender: UIButton) {
-        print(appDelegate().validateLocationManagerAuthorization())
-        if appDelegate().validateLocationManagerAuthorization() <= 1 {
+        let status  = appDelegate().validateLocationManagerAuthorization()
+        if status == 1 {
             performSegueWithIdentifier("SegueTracking", sender: sender)
+        }else if status == -1 {
+            appDelegate().locationManager.requestAlwaysAuthorization()
+            appDelegate().locationManager.delegate = self
         }else {
             presentViewController(showSettingAlert(), animated: true, completion: nil)
         }
@@ -56,10 +58,13 @@ class MainViewController: UIViewController, UIAlertViewDelegate{
         
     }
     
-    override func viewDidLayoutSubviews() {
-        containerView.removeConstraints(containerView.constraints)
-        containerView.translatesAutoresizingMaskIntoConstraints = true
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if appDelegate().validateLocationManagerAuthorization() == 1 {
+            performSegueWithIdentifier("SegueTracking", sender: startButton)
+        }
     }
+    
+    
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -68,6 +73,10 @@ class MainViewController: UIViewController, UIAlertViewDelegate{
         setupStartButton()
         setupWheel()
         containerView.addSubview(startButton)
+        slider.value = Double(interval)
+    }
+    
+    override func viewDidLoad() {
         let userDefault = NSUserDefaults.standardUserDefaults()
         if let value = userDefault.valueForKey(KEY) as? NSNumber {
             interval = value.integerValue
@@ -77,11 +86,20 @@ class MainViewController: UIViewController, UIAlertViewDelegate{
     func setupWheel(){
         slider = CircularSlider(frame: startButton.frame, currentValue: 5, minimumValue: 5, maximumValue: 60 )
         slider.trackWidth = slider.radius/2
-        slider.trackColor = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 0.5)
-        slider.fillColor = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
+        let colors = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
+        slider.trackColor = colors
+        slider.fillColor = colors
         slider.thumb.strokeColor = UIColor.whiteColor()
         slider.thumb.fillColor = UIColor.whiteColor()
         slider.layer.cornerRadius = slider.bounds.width/2
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "SegueTracking" {
+            if let destinationViewController = segue.destinationViewController as? TrackingViewController {
+                destinationViewController.intervalToSave = interval
+            }
+        }
     }
     
     func setupStartButton(){
