@@ -21,6 +21,9 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
     @IBOutlet weak var minuteLabel: UILabel!
     @IBOutlet weak var secondsLabel: UILabel!
     
+    private var play:UIButton!
+    private var stop:UIButton!
+    private var controlsContainer:UIView!
     private var currentLocation: CLLocation?
     private let timeTracker = TimeTracker()
     private var recordedLocationsCount = 0 {
@@ -46,12 +49,68 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
     
     @IBAction func pauseTracking(sender: UIButton) {
         if !timeTracker.isPaused() {
-            timeTracker.pause()
-        }else{
-            timeTracker.resume()
+            pauseTracker()
         }
     }
-    // MARK -
+    var backgroundMask:UIView!
+
+    func pauseTracker(){
+        timeTracker.pause()
+
+        play.backgroundColor = UIColor(red: 0, green: 1, blue: 0, alpha: 0.8)
+        stop.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.8)
+        
+        stop.setImage(UIImage(named: "stop.png"), forState: .Normal)
+        play.setImage(UIImage(named: "play.png"), forState: .Normal )
+        
+        play.layer.cornerRadius = play.bounds.width/2
+        stop.layer.cornerRadius = stop.bounds.width/2
+        
+        backgroundMask.backgroundColor = UIColor.blackColor()
+        
+        self.controlsContainer.addSubview(play)
+        self.controlsContainer.addSubview(stop)
+        self.view.insertSubview(backgroundMask, belowSubview: self.controlsContainer)
+
+        UIView.animateWithDuration(0.15, animations: { () -> Void in
+            let offset:CGFloat = 30
+            self.backgroundMask.alpha = 0.6
+            self.pauseButton.alpha = 0
+            self.play.frame.origin.x += self.dimension
+            self.play.frame.origin.y += offset
+            self.stop.frame.origin.x -= self.dimension
+            self.stop.frame.origin.y += offset
+            self.stop.alpha = 1
+            self.play.alpha = 1
+
+        })
+    }
+    var dimension:CGFloat! {
+        get {
+            return pauseButton.bounds.width/2
+        }
+    }
+
+    func resumeTracker(){
+        timeTracker.resume()
+
+        let offset:CGFloat = 30
+       UIView.animateWithDuration(0.15, animations: { _ in
+            self.backgroundMask.alpha = 0
+            self.pauseButton.alpha = 1
+            self.play.frame.origin.x -= self.dimension
+            self.play.frame.origin.y -= offset
+            self.stop.frame.origin.x += self.dimension
+            self.stop.frame.origin.y -= offset
+            }) { (_) -> Void in
+                self.backgroundMask.removeFromSuperview()
+                self.play.removeFromSuperview()
+                self.stop.removeFromSuperview()
+        }
+    }
+
+    
+    // MARK - 
     // MARK: TimeTrackerDelegate
     func handleTime(milliseconds:Double){
         //calculate the minutes in elapsed time.
@@ -83,6 +142,25 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        let frame =  CGRect(
+            x:controlsContainer.frame.width/2 - dimension/2,
+            y: controlsContainer.frame.height/2 - dimension/2,
+            width: dimension,
+            height:dimension)
+
+        controlsContainer = pauseButton.superview
+        backgroundMask = UIView(frame: view.frame)
+        
+        play = UIButton(frame: frame)
+        play.addTarget(self, action: "resumeTracker", forControlEvents: .TouchUpInside)
+        play.alpha = 0
+        
+        stop = UIButton(frame: frame)
+        stop.alpha = 0
     }
     
     private func addCornerRadiusViews(view:UIView){

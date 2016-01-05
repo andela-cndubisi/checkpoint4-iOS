@@ -199,7 +199,7 @@ public class Knob<T: SliderInformation>: CALayer {
     var strokeColor = UIColor.redColor()
     /// diameter of
     var horizontalLength:CGFloat! { return slider.radius * 0.15 }
-    /// knob Delegate must implement SliderInformation Protocol
+    ///  knob Delegate must implement SliderInformation Protocol
     var slider:Control! {
         didSet{
             let location = positionInRect()

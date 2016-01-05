@@ -36,7 +36,7 @@ class TimeTracker : NSObject {
     }
     
     func pause(){
-        timer?.invalidate()
+        timer!.invalidate()
         timeUserPaused = NSDate.timeIntervalSinceReferenceDate()
     }
     

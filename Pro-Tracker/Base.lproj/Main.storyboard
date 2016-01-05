@@ -247,6 +247,27 @@
                                     <rect key="frame" x="92" y="124" width="198" height="77"/>
                                 </variation>
                             </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NGS-pG-oUu">
+                                <rect key="frame" x="349" y="495" width="69" height="69"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="69" id="5wG-zQ-DYu"/>
+                                    <constraint firstAttribute="width" constant="69" id="swg-Gq-b5I"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="50"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b5M-tY-wrc">
+                                <rect key="frame" x="171" y="515" width="198" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Locations Recorded">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="63" y="315" width="215" height="30"/>
+                                </variation>
+                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dvR-tE-ytD" userLabel="Action Contrainer">
                                 <rect key="frame" x="0.0" y="234" width="600" height="200"/>
                                 <subviews>
@@ -269,27 +290,6 @@
                                     <constraint firstItem="WBc-TO-XyQ" firstAttribute="top" secondItem="dvR-tE-ytD" secondAttribute="top" id="meq-Po-Lxe"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NGS-pG-oUu">
-                                <rect key="frame" x="349" y="495" width="69" height="69"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="69" id="5wG-zQ-DYu"/>
-                                    <constraint firstAttribute="width" constant="69" id="swg-Gq-b5I"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="50"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b5M-tY-wrc">
-                                <rect key="frame" x="171" y="515" width="198" height="30"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Locations Recorded">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="63" y="315" width="215" height="30"/>
-                                </variation>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.27843137254901962" green="0.39215686274509803" blue="0.70588235294117652" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -370,6 +370,6 @@
         <image name="pause" width="39" height="43"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="But-kG-SA3"/>
+        <segue reference="jKv-Jt-mhT"/>
     </inferredMetricsTieBreakers>
 </document>
