@@ -12,11 +12,6 @@ import CoreData
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
-
-
-
     var window: UIWindow?
 
     private lazy var applicationDocumentsDirectory: NSURL = {
