@@ -13,6 +13,7 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var intervalSettingsButton: UIButton!
     
+    var locationManager:CLLocationManager!
     var setting = false
     let KEY = "INTERVAL"
     var startButton:UIButton!
@@ -26,7 +27,6 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     }
 
     @IBAction func setInterval(sender: UIButton) {
-
         let userDefault = NSUserDefaults.standardUserDefaults()
         
         if !setting {
@@ -43,12 +43,12 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         }
     }
     @IBAction func beginTracking(sender: UIButton) {
-        let status  = appDelegate().validateLocationManagerAuthorization()
+        let status  = LocationCoordinator.validateLocationManagerAuthorization()
         if status == 1 {
             performSegueWithIdentifier("SegueTracking", sender: sender)
         }else if status == -1 {
-            appDelegate().locationManager.requestAlwaysAuthorization()
-            appDelegate().locationManager.delegate = self
+            locationManager.requestAlwaysAuthorization()
+            locationManager.delegate = self
         }else {
             presentViewController(showSettingAlert(), animated: true, completion: nil)
         }
@@ -59,7 +59,7 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     }
     
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if appDelegate().validateLocationManagerAuthorization() == 1 {
+        if LocationCoordinator.validateLocationManagerAuthorization() == 1 {
             performSegueWithIdentifier("SegueTracking", sender: startButton)
         }
     }
@@ -111,7 +111,7 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         startButton.layer.cornerRadius = startButton.bounds.width / 2
         startButton.backgroundColor = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
         startButton.setImage(UIImage(named: "play.png"), forState:.Normal)
-        startButton.addTarget(self, action: "beginTracking:", forControlEvents: .TouchUpInside)        
+        startButton.addTarget(self, action: #selector(beginTracking), forControlEvents: .TouchUpInside)
     }
     
     func showSettingAlert() -> UIViewController{
