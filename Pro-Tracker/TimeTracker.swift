@@ -13,7 +13,7 @@ protocol TimeTrackerDelegate {
 }
 
 class TimeTracker : NSObject {
-    private var startTime:NSTimeInterval?
+    private var startTime:NSTimeInterval!
     private var timer:NSTimer?
     private var elapsedTime = 0.0
     private var pausedTimeDifference = 0.0
@@ -47,8 +47,7 @@ class TimeTracker : NSObject {
     
     func handleTimer(){
         let currentTime = NSDate.timeIntervalSinceReferenceDate()
-        elapsedTime = currentTime - pausedTimeDifference - startTime!
-        delegate!.handleTime(elapsedTime)
+        elapsedTime = currentTime - pausedTimeDifference - startTime
     }
     
     func reset(){
@@ -63,6 +62,6 @@ class TimeTracker : NSObject {
     }
     
     private func newTimer(){
-        timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target:self ,  selector: "handleTimer", userInfo: nil, repeats: true)
+        timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target:self ,  selector: #selector(handleTimer), userInfo: nil, repeats: true)
     }
 }
