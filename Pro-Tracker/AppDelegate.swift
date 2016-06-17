@@ -16,10 +16,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        if let rootViewController = window?.rootViewController as? MainViewController {
+        if let rootViewController = window?.rootViewController as? UINavigationController {
+            guard let mainViewController = rootViewController.viewControllers[0] as? MainViewController else {
+                return false
+            }
             var cordinator = LocationCoordinator()
-            rootViewController.locationManager = cordinator.locationManager
-            rootViewController.coreDataStore = self.coreDataStore
+            mainViewController.locationManager = cordinator.locationManager
+            mainViewController.coreDataStore = self.coreDataStore
         }
 
         return true
