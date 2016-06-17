@@ -63,19 +63,15 @@ class TrackingViewController: UIViewController {
         play.backgroundColor = UIColor(red: 0, green: 1, blue: 0, alpha: 0.8)
         stop.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.8)
         
-        stop.setImage(UIImage(named: "stop.png"), for: UIControlState())
-        play.setImage(UIImage(named: "play.png"), for: UIControlState() )
-        
         play.layer.cornerRadius = play.bounds.width/2
         stop.layer.cornerRadius = stop.bounds.width/2
         
         backgroundMask.backgroundColor = UIColor.black()
         
-        self.controlsContainer.addSubview(play)
-        self.controlsContainer.addSubview(stop)
-        self.view.insertSubview(backgroundMask, belowSubview: self.controlsContainer)
 
-        UIView.animate(withDuration: 0.15, animations: { () -> Void in
+
+        UIView.animate(withDuration: 0.15, animations: {() -> Void in
+
             let offset:CGFloat = 30
             self.backgroundMask.alpha = 0.6
             self.pauseButton.alpha = 0
@@ -86,7 +82,11 @@ class TrackingViewController: UIViewController {
             self.stop.alpha = 1
             self.play.alpha = 1
 
-        })
+            }, completion:{ completed in
+                self.play.removeFromSuperview()
+                self.stop.removeFromSuperview()
+                self.backgroundMask.removeFromSuperview()
+            })
     }
 
     func resumeTracker(){
@@ -114,41 +114,43 @@ class TrackingViewController: UIViewController {
         timeTracker.delegate = self
         timeTracker.start()
         
-        // customizeView
-        addCornerRadius(toView: pauseButton, withCornerRadius: pauseButton.bounds.size.width/2, clipToBounds: true)
-        addCornerRadius(toView: locationCount, withCornerRadius: locationCount.bounds.size.width/2, clipToBounds: true)
-        recordedLocations.layer.cornerRadius = 20
-        
         // setup LocationManager
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        // customizeView
+        addCornerRadius(toView: pauseButton, withCornerRadius: pauseButton.bounds.size.width/2, clipToBounds: true)
+        addCornerRadius(toView: locationCount, withCornerRadius: locationCount.bounds.size.width/2, clipToBounds: true)
+        recordedLocations.layer.cornerRadius = 20
+    }
+    
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        controlsContainer = pauseButton.superview
         let frame =  CGRect(
             x:controlsContainer.frame.width/2 - dimension/2,
             y: controlsContainer.frame.height/2 - dimension/2,
-            width: dimension,
-            height:dimension)
-
-        controlsContainer = pauseButton.superview
+            width: dimension, height:dimension)
         backgroundMask = UIView(frame: view.frame)
         
         play = UIButton(frame: frame)
         play.addTarget(self, action: #selector(resumeTracker), for: .touchUpInside)
+        play.setImage(UIImage(named: "play.png"), for: UIControlState() )
         play.alpha = 0
         
         stop = UIButton(frame: frame)
+        stop.setImage(UIImage(named: "stop.png"), for: UIControlState())
         stop.alpha = 0
+
     }
-    
-//    private func addCornerRadiusViews(_ view:UIView){
-//        view.layer.cornerRadius = view.frame.width/2
-//        view.clipsToBounds = true
-//    }
-    
+
     private func addCornerRadius(toView: UIView, withCornerRadius radius:CGFloat, clipToBounds clip:Bool){
         toView.layer.cornerRadius = radius
         toView.clipsToBounds = clip
