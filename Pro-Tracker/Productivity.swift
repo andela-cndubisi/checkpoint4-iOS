@@ -12,17 +12,16 @@ import CoreData
 
 class Productivity: NSManagedObject {
 // Insert code here to add functionality to your managed object subclass
-    
     static let ENTITY_NAME = "Productivity"
-    convenience init(date:NSDate){
-        let managedObjectContext = appDelegate().managedObjectContext
+    convenience init(date:NSDate, context:NSManagedObjectContext){
+        let managedObjectContext = context
         let entity =  NSEntityDescription.entityForName("Productivity", inManagedObjectContext: managedObjectContext)
         self.init(entity: entity!, insertIntoManagedObjectContext: managedObjectContext)
         self.date = date
     }
     
-    class func getAllProductivity() -> [Productivity]{
-        let managedObjectContext = appDelegate().managedObjectContext
+    class func getAllProductivity(inContext:NSManagedObjectContext) -> [Productivity]{
+        let managedObjectContext = inContext
         let fetchRequest = NSFetchRequest()
         let entity = NSEntityDescription.entityForName(ENTITY_NAME, inManagedObjectContext: managedObjectContext)
         fetchRequest.entity = entity
@@ -38,11 +37,11 @@ class Productivity: NSManagedObject {
         return []
     }
     
-    class func productivityWithDate(date:NSDate) -> Productivity?{
+    class func productivityWithDate(date:NSDate, inContext:NSManagedObjectContext) -> Productivity?{
         let fetchRequest = NSFetchRequest(entityName: "Productivity")
         fetchRequest.predicate = NSPredicate(format: "date == %@", argumentArray: [date])
         do {
-            let result = try appDelegate().managedObjectContext.executeFetchRequest(fetchRequest)
+            let result = try inContext.executeFetchRequest(fetchRequest)
             if result.count > 0 {
                 return result.first! as? Productivity
             }

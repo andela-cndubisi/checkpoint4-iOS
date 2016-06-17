@@ -20,7 +20,6 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
     @IBOutlet weak var hourLabel: UILabel!
     @IBOutlet weak var minuteLabel: UILabel!
     @IBOutlet weak var secondsLabel: UILabel!
-    
     private var play:UIButton!
     private var stop:UIButton!
     private var controlsContainer:UIView!
@@ -34,11 +33,14 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
     private var hasSavedLocation = false {
         didSet{
             if (oldValue == false){
-                currentLocation?.save()
+                currentLocation?.save(coreDataStore.managedObjectContext)
             }
         }
     }
-    
+    var dimension:CGFloat! {
+        return pauseButton.bounds.width/2
+    }
+    var coreDataStore:CoreDataStore!
     var intervalToSave:Int!
     var locationManager:CLLocationManager!
 
@@ -85,11 +87,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
 
         })
     }
-    var dimension:CGFloat! {
-        get {
-            return pauseButton.bounds.width/2
-        }
-    }
+
 
     func resumeTracker(){
         timeTracker.resume()
@@ -102,7 +100,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
             self.play.frame.origin.y -= offset
             self.stop.frame.origin.x += self.dimension
             self.stop.frame.origin.y -= offset
-            }) { (_) -> Void in
+            }) { _ in
                 self.backgroundMask.removeFromSuperview()
                 self.play.removeFromSuperview()
                 self.stop.removeFromSuperview()
@@ -138,7 +136,6 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         recordedLocations.layer.cornerRadius = 20
         
         // setup LocationManager
-        locationManager = appDelegate().locationManager
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
@@ -156,7 +153,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         backgroundMask = UIView(frame: view.frame)
         
         play = UIButton(frame: frame)
-        play.addTarget(self, action: "resumeTracker", forControlEvents: .TouchUpInside)
+        play.addTarget(self, action: #selector(resumeTracker), forControlEvents: .TouchUpInside)
         play.alpha = 0
         
         stop = UIButton(frame: frame)
@@ -175,7 +172,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
             currentLocation = locations.last!
         }
         if timeTracker.hasReachedMax(intervalToSave) && !hasSavedLocation {
-            recordedLocationsCount++
+            recordedLocationsCount += 1
             hasSavedLocation = true
         }
 
@@ -188,7 +185,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
 }
 
 extension CLLocation {
-    func save(){
+    func save(inContext:NSManagedObjectContext){
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(self, completionHandler: { (placemark, error) in
             do {
@@ -207,7 +204,7 @@ extension CLLocation {
                 }else {
                     address = "Unknown"
                 }
-                let location = Location(lat:self.coordinate.latitude, long:self.coordinate.latitude,address:  address)
+                let location = Location(lat:self.coordinate.latitude, long:self.coordinate.latitude,address:  address, context:  inContext)
                 try location.managedObjectContext?.save()
             } catch {
                 print(error)

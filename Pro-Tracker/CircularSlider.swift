@@ -19,7 +19,6 @@ public class CircularSlider: UIControl, SliderInformation{
         }
     }
     
-
     /**
      Start angle of Sliders, angle is in radians
      detault is 0
@@ -36,14 +35,14 @@ public class CircularSlider: UIControl, SliderInformation{
     var currentValue:Double!
     
     /// Color of Slider's track
-    var trackColor = UIColor.lightGrayColor() {
+    var trackColor:UIColor = .lightGrayColor() {
         didSet {
             setNeedsDisplay()
         }
     }
     
     /** Color of Slider's inner circle */
-    var fillColor = UIColor.clearColor(){
+    var fillColor:UIColor = .clearColor(){
         didSet{
             setNeedsDisplay()
         }
@@ -77,36 +76,36 @@ public class CircularSlider: UIControl, SliderInformation{
     public override func drawRect(rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
 
-        CGContextSaveGState(context)
+        CGContextSaveGState(context!)
         // Flip Context Coordinate System to UIKit's
         var transform = CGAffineTransformIdentity
         transform = CGAffineTransformScale(transform, 1.0, -1.0)
         transform = CGAffineTransformTranslate(transform, 0, -bounds.height)
-        CGContextConcatCTM(context, transform)
+        CGContextConcatCTM(context!, transform)
         
         // Draw Track
-        CGContextAddArc(context, bounds.midX, bounds.midY, radius, startAngle, endAngle, 1)
-        CGContextSetStrokeColorWithColor(context, trackColor.CGColor)
-        CGContextSetLineWidth(context, trackWidth)
-        CGContextSetLineCap(context, .Butt)
-        CGContextDrawPath(context, .Stroke)
+        CGContextAddArc(context!, bounds.midX, bounds.midY, radius, startAngle, endAngle, 1)
+        CGContextSetStrokeColorWithColor(context!, trackColor.CGColor)
+        CGContextSetLineWidth(context!, trackWidth)
+        CGContextSetLineCap(context!, .Butt)
+        CGContextDrawPath(context!, .Stroke)
         
         // Draw Progress Track
         let angle = valueToAngle(minimumValue)
-        CGContextSetLineWidth(context, 4)
-        CGContextSetStrokeColorWithColor(context,thumb.strokeColor.CGColor)
-        CGContextAddArc(context, bounds.midX, bounds.midY, radius, CGFloat(angle), CGFloat(currentAngle), 1)
-        CGContextStrokePath(context)
+        CGContextSetLineWidth(context!, 4)
+        CGContextSetStrokeColorWithColor(context!,thumb.strokeColor.CGColor)
+        CGContextAddArc(context!, bounds.midX, bounds.midY, radius, CGFloat(angle), CGFloat(currentAngle), 1)
+        CGContextStrokePath(context!)
         // Flip Context to Original Quartz Coordinate System
-        CGContextRestoreGState(context)
+        CGContextRestoreGState(context!)
         
         // Fill Center
-        CGContextSaveGState(context)
-        CGContextSetFillColorWithColor(context, fillColor.CGColor)
+        CGContextSaveGState(context!)
+        CGContextSetFillColorWithColor(context!, fillColor.CGColor)
         let length = radius + trackWidth/1.5
         let ellipse = CGRectMake(bounds.width/2 - length/2, bounds.height/2  - length/2, length, length)
-        CGContextFillEllipseInRect(context, ellipse)
-        CGContextRestoreGState(context)
+        CGContextFillEllipseInRect(context!, ellipse)
+        CGContextRestoreGState(context!)
         
         // Print value at center of ellipse
         let string = NSString(string: String(format:"%02d", arguments: [Int(value)]) )

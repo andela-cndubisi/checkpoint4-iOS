@@ -14,6 +14,7 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     @IBOutlet weak var intervalSettingsButton: UIButton!
     
     var locationManager:CLLocationManager!
+    var coreDataStore:CoreDataStore!
     var setting = false
     let KEY = "INTERVAL"
     var startButton:UIButton!
@@ -42,6 +43,7 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
             userDefault.synchronize()
         }
     }
+    
     @IBAction func beginTracking(sender: UIButton) {
         let status  = LocationCoordinator.validateLocationManagerAuthorization()
         if status == 1 {
@@ -63,8 +65,6 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
             performSegueWithIdentifier("SegueTracking", sender: startButton)
         }
     }
-    
-    
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -89,8 +89,8 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         let colors = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
         slider.trackColor = colors
         slider.fillColor = colors
-        slider.thumb.strokeColor = UIColor.whiteColor()
-        slider.thumb.fillColor = UIColor.whiteColor()
+        slider.thumb.strokeColor = .whiteColor()
+        slider.thumb.fillColor = .whiteColor()
         slider.layer.cornerRadius = slider.bounds.width/2
     }
     
@@ -98,6 +98,8 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         if segue.identifier == "SegueTracking" {
             if let destinationViewController = segue.destinationViewController as? TrackingViewController {
                 destinationViewController.intervalToSave = interval
+                destinationViewController.coreDataStore = coreDataStore
+                destinationViewController.locationManager = locationManager
             }
         }
     }
@@ -110,7 +112,7 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         startButton = UIButton(frame: CGRectMake(x, y, length, length))
         startButton.layer.cornerRadius = startButton.bounds.width / 2
         startButton.backgroundColor = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
-        startButton.setImage(UIImage(named: "play.png"), forState:.Normal)
+        startButton.setImage(UIImage(asset: .PlayButton), forState:.Normal)
         startButton.addTarget(self, action: #selector(beginTracking), forControlEvents: .TouchUpInside)
     }
     
@@ -125,4 +127,3 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         return LocationAlert
     }
 }
-

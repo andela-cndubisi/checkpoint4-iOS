@@ -17,6 +17,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
             tableView.reloadData()
         }
     }
+    var coreDataStore:CoreDataStore!
     
     @IBAction func sortBy(sender: UIButton) {
         
@@ -51,7 +52,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         let rightBorder = addLine()
         rightBorder.frame.origin.x = sortButton.frame.origin.x + 20
         view.layer.addSublayer(rightBorder)
-        tableContent = Productivity.getAllProductivity()
+        tableContent = Productivity.getAllProductivity(coreDataStore.managedObjectContext)
         tableView.delegate = self
         tableView.dataSource = self
     }

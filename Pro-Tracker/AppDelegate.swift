@@ -17,12 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         if let rootViewController = window?.rootViewController as? MainViewController {
-            rootViewController.locationManager = LocationCoordinator().locationManager
+            var cordinator = LocationCoordinator()
+            rootViewController.locationManager = cordinator.locationManager
+            rootViewController.coreDataStore = self.coreDataStore
         }
-    // Override point for customization after application launch. olo, iwolo
-//        if validateLocationManagerAuthorization() <= 0 {
-//            
-//        }
+
         return true
     }
 
@@ -47,73 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
-    
-
-
-}
-func appDelegate() -> AppDelegate {
-    return (UIApplication.sharedApplication().delegate as! AppDelegate)
 }
 
-class LocationCoordinator{
-    lazy var locationManager: CLLocationManager! = {
-        let manager = CLLocationManager()
-        manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.distanceFilter  = kCLLocationAccuracyBest
-        return manager
-    }()
-    
-    static func validateLocationManagerAuthorization() -> Int {
-        switch CLLocationManager.authorizationStatus(){
-        case .Denied: return -2
-        case .NotDetermined: return -1
-        case .AuthorizedWhenInUse: return 1
-        case .AuthorizedAlways: return 1
-        case .Restricted: return -3
-        }
-    }
-}
 
-class CoreDataStore{
-    
-    private lazy var applicationDocumentsDirectory: NSURL = {
-        let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-        return urls[urls.count-1]
-    }()
-    
-    lazy var managedObjectContext: NSManagedObjectContext = {
-        let coordinator = self.persistentStoreCoordinator
-        var managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-        managedObjectContext.persistentStoreCoordinator = coordinator
-        return managedObjectContext
-    }()
-    
-    private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("pro-tracker.sqlite")
-        var failureReason = "There was an error creating or loading the application's saved data."
-        do {
-            try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
-        } catch {
-            var dict = [String: AnyObject]()
-            dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
-            dict[NSLocalizedFailureReasonErrorKey] = failureReason
-            
-            dict[NSUnderlyingErrorKey] = error as NSError
-            let wrappedError = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
-            NSLog("Unresolved error \(wrappedError), \(wrappedError.userInfo)")
-            abort()
-        }
-        
-        return coordinator
-    }()
-    
-    private lazy var managedObjectModel: NSManagedObjectModel = {
-        let modelURL = NSBundle.mainBundle().URLForResource("ProductivityModel", withExtension: "momd")!
-        return NSManagedObjectModel(contentsOfURL: modelURL)!
-    }()
-    
-}
 
