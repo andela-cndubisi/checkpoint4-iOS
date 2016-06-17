@@ -86,16 +86,16 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     func setupWheel(){
         slider = CircularSlider(frame: startButton.frame, currentValue: 5, minimumValue: 5, maximumValue: 60 )
         slider.trackWidth = slider.radius/2
-        let colors = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
-        slider.trackColor = colors
-        slider.fillColor = colors
+        let color = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
+        slider.trackColor = color
+        slider.fillColor = color
         slider.thumb.strokeColor = .white()
         slider.thumb.fillColor = .white()
         slider.layer.cornerRadius = slider.bounds.width/2
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "SegueTracking" {
+        if segue.storyBoardidentifier == .Tracking  {
             if let destinationViewController = segue.destinationViewController as? TrackingViewController {
                 destinationViewController.intervalToSave = interval
                 destinationViewController.coreDataStore = coreDataStore
@@ -117,13 +117,23 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     }
     
     func showSettingAlert() -> UIViewController{
-       let LocationAlert =  UIAlertController(title: "Location Services Disabled", message: "Enable Location Services in Setting to Continue", preferredStyle: .alert)
-        LocationAlert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { (actionview) -> Void in
-            UIApplication.shared().openURL(URL(string:UIApplicationOpenSettingsURLString)!)
+       let LocationAlert =  UIAlertController(title: "Location Services Disabled",
+                                              message: "Enable Location Services in Setting to Continue",
+                                              preferredStyle: .alert)
+        
+        LocationAlert.addAction(UIAlertAction(title: "Settings",
+                                              style: .default,
+                                              handler: { (actionview) -> Void in
+                                                UIApplication.shared().openURL(URL(string:UIApplicationOpenSettingsURLString)!)
         }))
-        LocationAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (actionview) -> Void in
-            LocationAlert.dismiss(animated: true, completion: nil)
+        
+        LocationAlert.addAction(UIAlertAction(title: "OK",
+                                              style: .default,
+                                              handler: { (actionview) -> Void in
+                                                LocationAlert.dismiss(animated: true, completion: nil)
         }))
+        
         return LocationAlert
     }
 }
+
