@@ -12,7 +12,7 @@ import CoreLocation
 import CoreData
 import Contacts
 
-class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeTrackerDelegate {
+class TrackingViewController: UIViewController {
     
     @IBOutlet weak var pauseButton: UIButton!
     @IBOutlet weak var recordedLocations: UIButton!
@@ -25,6 +25,8 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
     private var controlsContainer:UIView!
     private var currentLocation: CLLocation?
     private let timeTracker = TimeTracker()
+    private var backgroundMask:UIView!
+
     private var recordedLocationsCount = 0 {
         didSet{
             locationCount.text = String(recordedLocationsCount)
@@ -54,7 +56,6 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
             pauseTracker()
         }
     }
-    var backgroundMask:UIView!
 
     func pauseTracker(){
         timeTracker.pause()
@@ -88,7 +89,6 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         })
     }
 
-
     func resumeTracker(){
         timeTracker.resume()
 
@@ -107,22 +107,6 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         }
     }
 
-    
-    // MARK - 
-    // MARK: TimeTrackerDelegate
-    func handleTime(_ milliseconds:Double){
-        //calculate the minutes in elapsed time.
-        var elapsedTime = milliseconds
-        let minutes = UInt8(elapsedTime / 60.0)
-        //calculate the seconds in elapsed time.
-        elapsedTime -= (TimeInterval(minutes) * 60)
-        let seconds = UInt32(elapsedTime)
-        elapsedTime -= TimeInterval(seconds)
-        //find out the fraction of milliseconds to be displayed.
-        secondsLabel.text = String(format: "%02d", seconds)
-        minuteLabel.text = String(format: "%02d", minutes)
-    }
-    
     // MARK -
     // MARK: View Life Cycle
     override func viewDidLoad() {
@@ -164,9 +148,13 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         view.layer.cornerRadius = view.frame.width/2
         view.clipsToBounds = true
     }
+
+}
+
+// MARK -
+// MARK: LocationManger Delegete
+extension TrackingViewController: CLLocationManagerDelegate {
     
-    // MARK -
-    // MARK: LocationManger Delegete
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if currentLocation == nil {
             currentLocation = locations.last!
@@ -175,7 +163,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
             recordedLocationsCount += 1
             hasSavedLocation = true
         }
-
+        
         print("distance", currentLocation!.distance(from: locations.last!))
         if currentLocation!.distance(from: locations.last!) >= 10 {
             timeTracker.reset()
@@ -184,36 +172,22 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
     }
 }
 
+// MARK -
+// MARK: TimeTrackerDelegate
+extension TrackingViewController:TimeTrackerDelegate {
+    
 
-
-extension CLLocation {
-    func save(_ inContext:NSManagedObjectContext){
-        let geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(self, completionHandler: { (placemark, error) in
-            do {
-                var address = ""
-                
-                if error == nil && placemark?.count > 0 {
-                    if let thoroughfare = placemark!.first!.thoroughfare {
-                        address += thoroughfare + " "
-                    }
-                    if let subAdministrativeArea = placemark!.first!.subAdministrativeArea {
-                        address += subAdministrativeArea + " "
-                    }
-                    if let country = placemark!.first!.country {
-                        address += country + " "
-                    }
-                }else {
-                    address = "Unknown"
-                }
-                let location = Location(lat:self.coordinate.latitude, long:self.coordinate.latitude,address:  address, context:  inContext)
-                try location.managedObjectContext?.save()
-            } catch {
-                print(error)
-            }
-            
-        })
+    func handleTime(_ milliseconds:Double){
+        //calculate the minutes in elapsed time.
+        var elapsedTime = milliseconds
+        let minutes = UInt8(elapsedTime / 60.0)
+        //calculate the seconds in elapsed time.
+        elapsedTime -= (TimeInterval(minutes) * 60)
+        let seconds = UInt32(elapsedTime)
+        elapsedTime -= TimeInterval(seconds)
+        //find out the fraction of milliseconds to be displayed.
+        secondsLabel.text = String(format: "%02d", seconds)
+        minuteLabel.text = String(format: "%02d", minutes)
     }
+    
 }
-
-
