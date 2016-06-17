@@ -22,53 +22,53 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     private var interval = 5 {
         didSet{
             if !setting {
-                intervalSettingsButton.setTitle("\(interval) minutes", forState: .Normal)
+                intervalSettingsButton.setTitle("\(interval) minutes", for: UIControlState())
             }
         }
     }
 
-    @IBAction func setInterval(sender: UIButton) {
-        let userDefault = NSUserDefaults.standardUserDefaults()
+    @IBAction func setInterval(_ sender: UIButton) {
+        let userDefault = UserDefaults.standard()
         
         if !setting {
-            UIView.transitionFromView(startButton, toView: slider, duration: 0.3, options: .TransitionFlipFromTop, completion: nil)
+            UIView.transition(from: startButton, to: slider, duration: 0.3, options: .transitionFlipFromTop, completion: nil)
             setting = !setting
-            sender.setTitle("Done", forState: .Normal)
+            sender.setTitle("Done", for: UIControlState())
         }else {
-            UIView.transitionFromView(slider, toView: startButton, duration: 0.3, options: .TransitionFlipFromBottom, completion: nil)
+            UIView.transition(from: slider, to: startButton, duration: 0.3, options: .transitionFlipFromBottom, completion: nil)
             setting = !setting
             interval = Int(slider.value)
-            sender.setTitle("\(interval) minutes", forState: .Normal)
-            userDefault.setInteger(interval, forKey: KEY)
+            sender.setTitle("\(interval) minutes", for: UIControlState())
+            userDefault.set(interval, forKey: KEY)
             userDefault.synchronize()
         }
     }
     
-    @IBAction func beginTracking(sender: UIButton) {
+    @IBAction func beginTracking(_ sender: UIButton) {
         let status  = LocationCoordinator.validateLocationManagerAuthorization()
         if status == 1 {
-            performSegueWithIdentifier("SegueTracking", sender: sender)
+            performSegue(withIdentifier: "SegueTracking", sender: sender)
         }else if status == -1 {
             locationManager.requestAlwaysAuthorization()
             locationManager.delegate = self
         }else {
-            presentViewController(showSettingAlert(), animated: true, completion: nil)
+            present(showSettingAlert(), animated: true, completion: nil)
         }
     }
     
-    @IBAction func showHistory(sender: UIBarButtonItem) {
+    @IBAction func showHistory(_ sender: UIBarButtonItem) {
         
     }
     
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if LocationCoordinator.validateLocationManagerAuthorization() == 1 {
-            performSegueWithIdentifier("SegueTracking", sender: startButton)
+            performSegue(withIdentifier: "SegueTracking", sender: startButton)
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController!.navigationBar.barStyle = .Black
+        navigationController!.navigationBar.barStyle = .black
         navigationController!.navigationBar.barTintColor = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
         setupStartButton()
         setupWheel()
@@ -77,9 +77,9 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     }
     
     override func viewDidLoad() {
-        let userDefault = NSUserDefaults.standardUserDefaults()
-        if let value = userDefault.valueForKey(KEY) as? NSNumber {
-            interval = value.integerValue
+        let userDefault = UserDefaults.standard()
+        if let value = userDefault.value(forKey: KEY) as? NSNumber {
+            interval = value.intValue
         }
     }
     
@@ -89,12 +89,12 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         let colors = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
         slider.trackColor = colors
         slider.fillColor = colors
-        slider.thumb.strokeColor = .whiteColor()
-        slider.thumb.fillColor = .whiteColor()
+        slider.thumb.strokeColor = .white()
+        slider.thumb.fillColor = .white()
         slider.layer.cornerRadius = slider.bounds.width/2
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "SegueTracking" {
             if let destinationViewController = segue.destinationViewController as? TrackingViewController {
                 destinationViewController.intervalToSave = interval
@@ -109,20 +109,20 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         let x = containerView.bounds.width/2 - length/2
         let y = containerView.bounds.height/2 - length/2
         
-        startButton = UIButton(frame: CGRectMake(x, y, length, length))
+        startButton = UIButton(frame: CGRect(x: x, y: y, width: length, height: length))
         startButton.layer.cornerRadius = startButton.bounds.width / 2
         startButton.backgroundColor = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
-        startButton.setImage(UIImage(asset: .PlayButton), forState:.Normal)
-        startButton.addTarget(self, action: #selector(beginTracking), forControlEvents: .TouchUpInside)
+        startButton.setImage(UIImage(asset: .PlayButton), for:UIControlState())
+        startButton.addTarget(self, action: #selector(beginTracking), for: .touchUpInside)
     }
     
     func showSettingAlert() -> UIViewController{
-       let LocationAlert =  UIAlertController(title: "Location Services Disabled", message: "Enable Location Services in Setting to Continue", preferredStyle: .Alert)
-        LocationAlert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (actionview) -> Void in
-            UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+       let LocationAlert =  UIAlertController(title: "Location Services Disabled", message: "Enable Location Services in Setting to Continue", preferredStyle: .alert)
+        LocationAlert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { (actionview) -> Void in
+            UIApplication.shared().openURL(URL(string:UIApplicationOpenSettingsURLString)!)
         }))
-        LocationAlert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (actionview) -> Void in
-            LocationAlert.dismissViewControllerAnimated(true, completion: nil)
+        LocationAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (actionview) -> Void in
+            LocationAlert.dismiss(animated: true, completion: nil)
         }))
         return LocationAlert
     }

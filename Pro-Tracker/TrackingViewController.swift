@@ -45,11 +45,11 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
     var locationManager:CLLocationManager!
 
     
-    @IBAction func showHistory(sender: UIBarButtonItem) {
+    @IBAction func showHistory(_ sender: UIBarButtonItem) {
 
     }
     
-    @IBAction func pauseTracking(sender: UIButton) {
+    @IBAction func pauseTracking(_ sender: UIButton) {
         if !timeTracker.isPaused() {
             pauseTracker()
         }
@@ -62,19 +62,19 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         play.backgroundColor = UIColor(red: 0, green: 1, blue: 0, alpha: 0.8)
         stop.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.8)
         
-        stop.setImage(UIImage(named: "stop.png"), forState: .Normal)
-        play.setImage(UIImage(named: "play.png"), forState: .Normal )
+        stop.setImage(UIImage(named: "stop.png"), for: UIControlState())
+        play.setImage(UIImage(named: "play.png"), for: UIControlState() )
         
         play.layer.cornerRadius = play.bounds.width/2
         stop.layer.cornerRadius = stop.bounds.width/2
         
-        backgroundMask.backgroundColor = UIColor.blackColor()
+        backgroundMask.backgroundColor = UIColor.black()
         
         self.controlsContainer.addSubview(play)
         self.controlsContainer.addSubview(stop)
         self.view.insertSubview(backgroundMask, belowSubview: self.controlsContainer)
 
-        UIView.animateWithDuration(0.15, animations: { () -> Void in
+        UIView.animate(withDuration: 0.15, animations: { () -> Void in
             let offset:CGFloat = 30
             self.backgroundMask.alpha = 0.6
             self.pauseButton.alpha = 0
@@ -93,7 +93,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         timeTracker.resume()
 
         let offset:CGFloat = 30
-       UIView.animateWithDuration(0.15, animations: { _ in
+       UIView.animate(withDuration: 0.15, animations: { _ in
             self.backgroundMask.alpha = 0
             self.pauseButton.alpha = 1
             self.play.frame.origin.x -= self.dimension
@@ -110,14 +110,14 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
     
     // MARK - 
     // MARK: TimeTrackerDelegate
-    func handleTime(milliseconds:Double){
+    func handleTime(_ milliseconds:Double){
         //calculate the minutes in elapsed time.
         var elapsedTime = milliseconds
         let minutes = UInt8(elapsedTime / 60.0)
         //calculate the seconds in elapsed time.
-        elapsedTime -= (NSTimeInterval(minutes) * 60)
+        elapsedTime -= (TimeInterval(minutes) * 60)
         let seconds = UInt32(elapsedTime)
-        elapsedTime -= NSTimeInterval(seconds)
+        elapsedTime -= TimeInterval(seconds)
         //find out the fraction of milliseconds to be displayed.
         secondsLabel.text = String(format: "%02d", seconds)
         minuteLabel.text = String(format: "%02d", minutes)
@@ -141,7 +141,7 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         locationManager.startUpdatingLocation()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         let frame =  CGRect(
             x:controlsContainer.frame.width/2 - dimension/2,
@@ -153,21 +153,21 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
         backgroundMask = UIView(frame: view.frame)
         
         play = UIButton(frame: frame)
-        play.addTarget(self, action: #selector(resumeTracker), forControlEvents: .TouchUpInside)
+        play.addTarget(self, action: #selector(resumeTracker), for: .touchUpInside)
         play.alpha = 0
         
         stop = UIButton(frame: frame)
         stop.alpha = 0
     }
     
-    private func addCornerRadiusViews(view:UIView){
+    private func addCornerRadiusViews(_ view:UIView){
         view.layer.cornerRadius = view.frame.width/2
         view.clipsToBounds = true
     }
     
     // MARK -
     // MARK: LocationManger Delegete
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if currentLocation == nil {
             currentLocation = locations.last!
         }
@@ -176,16 +176,18 @@ class TrackingViewController: UIViewController, CLLocationManagerDelegate, TimeT
             hasSavedLocation = true
         }
 
-        print("distance", currentLocation!.distanceFromLocation(locations.last!))
-        if currentLocation!.distanceFromLocation(locations.last!) >= 10 {
+        print("distance", currentLocation!.distance(from: locations.last!))
+        if currentLocation!.distance(from: locations.last!) >= 10 {
             timeTracker.reset()
             currentLocation = nil
         }
     }
 }
 
+
+
 extension CLLocation {
-    func save(inContext:NSManagedObjectContext){
+    func save(_ inContext:NSManagedObjectContext){
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(self, completionHandler: { (placemark, error) in
             do {

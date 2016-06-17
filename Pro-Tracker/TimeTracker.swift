@@ -9,59 +9,59 @@
 import Foundation
 
 protocol TimeTrackerDelegate {
-    func handleTime(milliseconds:Double)
+    func handleTime(_ milliseconds:Double)
 }
 
 class TimeTracker : NSObject {
-    private var startTime:NSTimeInterval!
-    private var timer:NSTimer?
+    private var startTime:TimeInterval!
+    private var timer:Timer?
     private var elapsedTime = 0.0
     private var pausedTimeDifference = 0.0
     private var timeUserPaused = 0.0
     var delegate:TimeTrackerDelegate?
     
-    func setTimer(timer:NSTimer){
+    func setTimer(_ timer:Timer){
         self.timer = timer
     }
     
     func isPaused() -> Bool {
-        return !timer!.valid
+        return !timer!.isValid
     }
     
     func start(){
         if startTime == nil {
-            startTime = NSDate.timeIntervalSinceReferenceDate()
+            startTime = Date.timeIntervalSinceReferenceDate
             newTimer()
         }
     }
     
     func pause(){
         timer!.invalidate()
-        timeUserPaused = NSDate.timeIntervalSinceReferenceDate()
+        timeUserPaused = Date.timeIntervalSinceReferenceDate
     }
     
     func resume(){
-        pausedTimeDifference += NSDate.timeIntervalSinceReferenceDate() - timeUserPaused;
+        pausedTimeDifference += Date.timeIntervalSinceReferenceDate - timeUserPaused;
         newTimer()
     }
     
     func handleTimer(){
-        let currentTime = NSDate.timeIntervalSinceReferenceDate()
+        let currentTime = Date.timeIntervalSinceReferenceDate
         elapsedTime = currentTime - pausedTimeDifference - startTime
     }
     
     func reset(){
         pausedTimeDifference = 0.0
         timeUserPaused = 0.0
-        startTime = NSDate.timeIntervalSinceReferenceDate()
+        startTime = Date.timeIntervalSinceReferenceDate
         newTimer()
     }
     
-    func hasReachedMax(max:NSInteger) -> Bool{
+    func hasReachedMax(_ max:NSInteger) -> Bool{
         return elapsedTime >= Double(max*60)
     }
     
     private func newTimer(){
-        timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target:self ,  selector: #selector(handleTimer), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target:self ,  selector: #selector(handleTimer), userInfo: nil, repeats: true)
     }
 }

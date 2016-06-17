@@ -13,21 +13,21 @@ import CoreData
 class Productivity: NSManagedObject {
 // Insert code here to add functionality to your managed object subclass
     static let ENTITY_NAME = "Productivity"
-    convenience init(date:NSDate, context:NSManagedObjectContext){
+    convenience init(date:Date, context:NSManagedObjectContext){
         let managedObjectContext = context
-        let entity =  NSEntityDescription.entityForName("Productivity", inManagedObjectContext: managedObjectContext)
-        self.init(entity: entity!, insertIntoManagedObjectContext: managedObjectContext)
+        let entity =  NSEntityDescription.entity(forEntityName: "Productivity", in: managedObjectContext)
+        self.init(entity: entity!, insertInto: managedObjectContext)
         self.date = date
     }
     
-    class func getAllProductivity(inContext:NSManagedObjectContext) -> [Productivity]{
+    class func getAllProductivity(_ inContext:NSManagedObjectContext) -> [Productivity]{
         let managedObjectContext = inContext
-        let fetchRequest = NSFetchRequest()
-        let entity = NSEntityDescription.entityForName(ENTITY_NAME, inManagedObjectContext: managedObjectContext)
+        let fetchRequest = NSFetchRequest<Productivity>()
+        let entity = NSEntityDescription.entity(forEntityName: ENTITY_NAME, in: managedObjectContext)
         fetchRequest.entity = entity
         
         do {
-            let result = try managedObjectContext.executeFetchRequest(fetchRequest) as! [Productivity]
+            let result = try managedObjectContext.fetch(fetchRequest)
             return result
             
         } catch {
@@ -37,13 +37,13 @@ class Productivity: NSManagedObject {
         return []
     }
     
-    class func productivityWithDate(date:NSDate, inContext:NSManagedObjectContext) -> Productivity?{
-        let fetchRequest = NSFetchRequest(entityName: "Productivity")
-        fetchRequest.predicate = NSPredicate(format: "date == %@", argumentArray: [date])
+    class func productivityWithDate(_ date:Date, inContext:NSManagedObjectContext) -> Productivity?{
+        let fetchRequest = NSFetchRequest<Productivity>(entityName: "Productivity")
+        fetchRequest.predicate = Predicate(format: "date == %@", argumentArray: [date])
         do {
-            let result = try inContext.executeFetchRequest(fetchRequest)
+            let result = try inContext.fetch(fetchRequest)
             if result.count > 0 {
-                return result.first! as? Productivity
+                return result.first!
             }
         }catch {
             return nil

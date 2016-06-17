@@ -19,20 +19,20 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     var coreDataStore:CoreDataStore!
     
-    @IBAction func sortBy(sender: UIButton) {
+    @IBAction func sortBy(_ sender: UIButton) {
         
     }
     
     func addLine() -> CALayer {
         let width = view.frame.width / 2 - sortButton.frame.width
         let border = CALayer()
-        border.backgroundColor = UIColor.grayColor().CGColor
-        border.frame = CGRectMake(0, sortButton.frame.origin.y + sortButton.frame.height/2, width, 0.5)
+        border.backgroundColor = UIColor.gray().cgColor
+        border.frame = CGRect(x: 0, y: sortButton.frame.origin.y + sortButton.frame.height/2, width: width, height: 0.5)
         return border
     }
  
-    @IBAction func done(sender: UIBarButtonItem) {
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func done(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: -
@@ -40,11 +40,11 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController!.navigationBar.barStyle = .Black
+        navigationController!.navigationBar.barStyle = .black
         navigationController!.navigationBar.barTintColor = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let leftBorder = addLine()
         leftBorder.frame.origin.x = 20
@@ -61,29 +61,29 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     // MARK: -
     // MARK: TableView DataSource
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return tableContent!.count
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let productivity = tableContent![section]
         return productivity.location!.count
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let productivity = tableContent![section]
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = .MediumStyle
-        let str = dateFormatter.stringFromDate(productivity.date!)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .mediumStyle
+        let str = dateFormatter.string(from: productivity.date! as Date)
         return str
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let reuseIdetifier = "HistoryCell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdetifier, forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdetifier, for: indexPath)
 
-        let locations = tableContent![indexPath.section].location!
-        let location = (locations.allObjects as! [Location])[indexPath.row]
+        let locations = tableContent![(indexPath as NSIndexPath).section].location!
+        let location = (locations.allObjects as! [Location])[(indexPath as NSIndexPath).row]
         
         cell.textLabel?.text = location.address
         return cell

@@ -20,6 +20,7 @@ class ModelTest: XCTestCase {
         manager.requestAlwaysAuthorization()
         return manager
     }()
+    var coredataStore:CoreDataStore = CoreDataStore()
     
 //    private lazy var applicationDocumentsDirectory: NSURL = {
 //        let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
@@ -60,7 +61,8 @@ class ModelTest: XCTestCase {
 //    
     func testSaveLocation(){
         do {
-            let location = Location(lat: 6.52438, long: 3.37921, address: "Lagos")
+            
+            let location = Location(lat: 6.52438, long: 3.37921, address: "Lagos", context: coredataStore.managedObjectContext)
             try location.managedObjectContext?.save()
         }catch {
             print (error)
@@ -69,14 +71,14 @@ class ModelTest: XCTestCase {
     }
     
     func testLocationFetch(){
-        let fetch = NSFetchRequest(entityName: "Location")
+        let fetch:NSFetchRequest<Location> = NSFetchRequest(entityName: "Location")
 //        fetch.mpo
 //        fetch.entity = NSEntityDescription.entityForName("Location", inManagedObjectContext: self.managedObjectContext)
         do{
-            let result =  try appDelegate().managedObjectContext.executeFetchRequest(fetch)
+            let result =  try coredataStore.managedObjectContext.fetch(fetch)
             print(result)
             for location in result {
-                let loca = location as! Location
+                let loca = location
                 XCTAssertNotNil(loca.latitude!)
                 XCTAssertNotNil(loca.longitude!)
                 XCTAssertNotNil(loca.address!)
@@ -88,12 +90,12 @@ class ModelTest: XCTestCase {
     }
     
     func testGetLocationByDate(){
-        let locations = Productivity.getAllProductivity()
+        let locations = Productivity.getAllProductivity(coredataStore.managedObjectContext)
         XCTAssertNotNil(locations)
         for productivity in locations {
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateStyle = .MediumStyle
-            let str = dateFormatter.stringFromDate(productivity.date!)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .mediumStyle
+            let str = dateFormatter.string(from: productivity.date!)
             print(str)
             
         }

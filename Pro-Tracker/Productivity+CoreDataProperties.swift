@@ -14,7 +14,7 @@ import CoreData
 
 extension Productivity {
 
-    @NSManaged var date: NSDate?
+    @NSManaged var date: Date?
     @NSManaged var location: NSSet?
 
 }

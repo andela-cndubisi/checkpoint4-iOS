@@ -35,14 +35,14 @@ public class CircularSlider: UIControl, SliderInformation{
     var currentValue:Double!
     
     /// Color of Slider's track
-    var trackColor:UIColor = .lightGrayColor() {
+    var trackColor:UIColor = .lightGray() {
         didSet {
             setNeedsDisplay()
         }
     }
     
     /** Color of Slider's inner circle */
-    var fillColor:UIColor = .clearColor(){
+    var fillColor:UIColor = .clear(){
         didSet{
             setNeedsDisplay()
         }
@@ -65,7 +65,7 @@ public class CircularSlider: UIControl, SliderInformation{
         thumb = Knob()
         thumb.slider = self
 
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear()
         layer.addSublayer(thumb)
     }
     
@@ -73,57 +73,57 @@ public class CircularSlider: UIControl, SliderInformation{
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func drawRect(rect: CGRect) {
+    public override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
 
-        CGContextSaveGState(context!)
+        context!.saveGState()
         // Flip Context Coordinate System to UIKit's
-        var transform = CGAffineTransformIdentity
-        transform = CGAffineTransformScale(transform, 1.0, -1.0)
-        transform = CGAffineTransformTranslate(transform, 0, -bounds.height)
-        CGContextConcatCTM(context!, transform)
+        var transform = CGAffineTransform.identity
+        transform = transform.scaleBy(x: 1.0, y: -1.0)
+        transform = transform.translateBy(x: 0, y: -bounds.height)
+        context!.concatCTM(transform)
         
         // Draw Track
-        CGContextAddArc(context!, bounds.midX, bounds.midY, radius, startAngle, endAngle, 1)
-        CGContextSetStrokeColorWithColor(context!, trackColor.CGColor)
-        CGContextSetLineWidth(context!, trackWidth)
-        CGContextSetLineCap(context!, .Butt)
-        CGContextDrawPath(context!, .Stroke)
+        context!.addArc(centerX: bounds.midX, y: bounds.midY, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: 1)
+        context!.setStrokeColor(trackColor.cgColor)
+        context!.setLineWidth(trackWidth)
+        context!.setLineCap(.butt)
+        context!.drawPath(using: .stroke)
         
         // Draw Progress Track
         let angle = valueToAngle(minimumValue)
-        CGContextSetLineWidth(context!, 4)
-        CGContextSetStrokeColorWithColor(context!,thumb.strokeColor.CGColor)
-        CGContextAddArc(context!, bounds.midX, bounds.midY, radius, CGFloat(angle), CGFloat(currentAngle), 1)
-        CGContextStrokePath(context!)
+        context!.setLineWidth(4)
+        context!.setStrokeColor(thumb.strokeColor.cgColor)
+        context!.addArc(centerX: bounds.midX, y: bounds.midY, radius: radius, startAngle: CGFloat(angle), endAngle: CGFloat(currentAngle), clockwise: 1)
+        context!.strokePath()
         // Flip Context to Original Quartz Coordinate System
-        CGContextRestoreGState(context!)
+        context!.restoreGState()
         
         // Fill Center
-        CGContextSaveGState(context!)
-        CGContextSetFillColorWithColor(context!, fillColor.CGColor)
+        context!.saveGState()
+        context!.setFillColor(fillColor.cgColor)
         let length = radius + trackWidth/1.5
-        let ellipse = CGRectMake(bounds.width/2 - length/2, bounds.height/2  - length/2, length, length)
-        CGContextFillEllipseInRect(context!, ellipse)
-        CGContextRestoreGState(context!)
+        let ellipse = CGRect(x: bounds.width/2 - length/2, y: bounds.height/2  - length/2, width: length, height: length)
+        context!.fillEllipse(in: ellipse)
+        context!.restoreGState()
         
         // Print value at center of ellipse
         let string = NSString(string: String(format:"%02d", arguments: [Int(value)]) )
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .Left
-        let attributes = [ NSFontAttributeName :  UIFont.systemFontOfSize(radius, weight: UIFontWeightThin), NSForegroundColorAttributeName: UIColor.whiteColor(), NSParagraphStyleAttributeName : paragraphStyle ]
-        string.drawAtPoint(CGPointMake(ellipse.midX - ellipse.origin.x, ellipse.midY -  ellipse.origin.y), withAttributes: attributes)
+        paragraphStyle.alignment = .left
+        let attributes = [ NSFontAttributeName :  UIFont.systemFont(ofSize: radius, weight: UIFontWeightThin), NSForegroundColorAttributeName: UIColor.white(), NSParagraphStyleAttributeName : paragraphStyle ]
+        string.draw(at: CGPoint(x: ellipse.midX - ellipse.origin.x, y: ellipse.midY -  ellipse.origin.y), withAttributes: attributes)
     }
     
-    public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-        let touchPoint = touch.locationInView(self)
+    public override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        let touchPoint = touch.location(in: self)
         let canMove = thumb.frame.contains(touchPoint)
         return canMove
     }
     
-    public override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-        super.continueTrackingWithTouch(touch, withEvent: event)
-        var lastpoint = touch.locationInView(self)
+    public override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        super.continueTracking(touch, with: event)
+        var lastpoint = touch.location(in: self)
         lastpoint.x -= radius
         lastpoint.y -= radius
         let rad =  atan2(lastpoint.y,lastpoint.x);
@@ -153,7 +153,7 @@ public class CircularSlider: UIControl, SliderInformation{
             if currentValue < minimumValue {
                 currentValue = minimumValue
             }
-            sendActionsForControlEvents(.ValueChanged)
+            sendActions(for: .valueChanged)
             setNeedsDisplay()
             if let thumb = thumb {
                 thumb.setNeedsDisplay()
@@ -180,7 +180,7 @@ public class CircularSlider: UIControl, SliderInformation{
         }
     }
 
-    public func valueToAngle(value:Double) -> Double{
+    public func valueToAngle(_ value:Double) -> Double{
         let v = value / maximumValue
         let valueInDegrees = v * -360 + 90
         return  toRadians(valueInDegrees) // add 90 to make north
@@ -193,9 +193,9 @@ public class CircularSlider: UIControl, SliderInformation{
 public class Knob<T: SliderInformation>: CALayer {
     typealias Control = T
     /// Color of the knob
-    var fillColor = UIColor.blueColor()
+    var fillColor = UIColor.blue()
     /// Color of the slider's progress
-    var strokeColor = UIColor.redColor()
+    var strokeColor = UIColor.red()
     /// diameter of
     var horizontalLength:CGFloat! { return slider.radius * 0.15 }
     ///  knob Delegate must implement SliderInformation Protocol
@@ -211,12 +211,12 @@ public class Knob<T: SliderInformation>: CALayer {
         super.init()
     }
     
-    public override func drawInContext(ctx: CGContext) {
+    public override func draw(in ctx: CGContext) {
         updatePosition()
         UIGraphicsPushContext(ctx)
         fillColor.setFill()
         let path = UIBezierPath(roundedRect: bounds, cornerRadius: bounds.height/2 )
-        path.closePath()
+        path.close()
         path.fill()
         UIGraphicsPopContext()
     }
@@ -231,11 +231,11 @@ public class Knob<T: SliderInformation>: CALayer {
     }
     
     private func positionInRect() -> (CGPoint) {
-        var bounds = CGRectZero
+        var bounds = CGRect.zero
         if let slider = self.slider as! UIView?{
             bounds = slider.bounds
         }
-        let centerPoint = CGPointMake(bounds.midX, bounds.midY)
+        let centerPoint = CGPoint(x: bounds.midX, y: bounds.midY)
         let radi = -slider.currentAngle
         let x = round(centerPoint.x + slider.radius * CGFloat(cos(radi)) )
         let y = round(centerPoint.y + slider.radius * CGFloat(sin(radi)))
@@ -261,5 +261,5 @@ public protocol SliderInformation {
     /// widht of the Slider's track not the progress
     var trackWidth:CGFloat {get set}
     /// converts current value to and angle in radians
-    func valueToAngle(value:Double) -> Double
+    func valueToAngle(_ value:Double) -> Double
 }

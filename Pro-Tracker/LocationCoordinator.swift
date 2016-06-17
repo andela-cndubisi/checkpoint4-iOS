@@ -18,11 +18,11 @@ struct LocationCoordinator{
     
     static func validateLocationManagerAuthorization() -> Int {
         switch CLLocationManager.authorizationStatus(){
-        case .Denied: return -2
-        case .NotDetermined: return -1
-        case .AuthorizedWhenInUse: return 1
-        case .AuthorizedAlways: return 1
-        case .Restricted: return -3
+        case .denied: return -2
+        case .notDetermined: return -1
+        case .authorizedWhenInUse: return 1
+        case .authorizedAlways: return 1
+        case .restricted: return -3
         }
     }
 }
