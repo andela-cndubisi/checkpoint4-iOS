@@ -115,8 +115,8 @@ class TrackingViewController: UIViewController {
         timeTracker.start()
         
         // customizeView
-        addCornerRadiusViews(pauseButton)
-        addCornerRadiusViews(locationCount)
+        addCornerRadius(toView: pauseButton, withCornerRadius: pauseButton.bounds.size.width/2, clipToBounds: true)
+        addCornerRadius(toView: locationCount, withCornerRadius: locationCount.bounds.size.width/2, clipToBounds: true)
         recordedLocations.layer.cornerRadius = 20
         
         // setup LocationManager
@@ -144,9 +144,14 @@ class TrackingViewController: UIViewController {
         stop.alpha = 0
     }
     
-    private func addCornerRadiusViews(_ view:UIView){
-        view.layer.cornerRadius = view.frame.width/2
-        view.clipsToBounds = true
+//    private func addCornerRadiusViews(_ view:UIView){
+//        view.layer.cornerRadius = view.frame.width/2
+//        view.clipsToBounds = true
+//    }
+    
+    private func addCornerRadius(toView: UIView, withCornerRadius radius:CGFloat, clipToBounds clip:Bool){
+        toView.layer.cornerRadius = radius
+        toView.clipsToBounds = clip
     }
 
 }
