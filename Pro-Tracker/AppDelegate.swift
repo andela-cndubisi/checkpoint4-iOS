@@ -16,12 +16,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        if let rootViewController = window?.rootViewController as? UINavigationController {
-            guard let mainViewController = rootViewController.viewControllers[0] as? MainViewController else {
+        if let navigationController = window?.rootViewController as? UINavigationController {
+            navigationController.navigationBar.barStyle = .black
+            navigationController.navigationBar.barTintColor = App.color
+            guard let mainViewController = navigationController.viewControllers[0] as? MainViewController else {
                 return false
             }
-            var cordinator = LocationCoordinator()
-            mainViewController.locationManager = cordinator.locationManager
+            let cordinator = LocationCoordinator()
+            mainViewController.locationCoordinator = cordinator
             mainViewController.coreDataStore = self.coreDataStore
         }
 
