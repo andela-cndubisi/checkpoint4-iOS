@@ -23,7 +23,9 @@
 		2FEEBF101C1078DD002383D1 /* TimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FEEBF041C1078DD002383D1 /* TimeTracker.swift */; };
 		2FEEBF111C1078DD002383D1 /* TrackingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FEEBF051C1078DD002383D1 /* TrackingViewController.swift */; };
 		2FEEBF161C1079E0002383D1 /* ModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FEEBF151C1079E0002383D1 /* ModelTest.swift */; };
+		4F1A27CA1D16D4AB00F96958 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1A27C91D16D4AB00F96958 /* AppConfiguration.swift */; };
 		4F1D0CC71D140F7C00D6B8B7 /* CLLocation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1D0CC61D140F7C00D6B8B7 /* CLLocation+Extension.swift */; };
+		4F1D0CC91D1436C800D6B8B7 /* UIStroyboardSegue+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1D0CC81D1436C800D6B8B7 /* UIStroyboardSegue+Extension.swift */; };
 		4F95E3F21D0AB35400C836B4 /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F95E3F11D0AB35400C836B4 /* UIImage+Extension.swift */; };
 		4F95E3F51D0AD39200C836B4 /* CoreDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F95E3F41D0AD39200C836B4 /* CoreDataStore.swift */; };
 		4F95E3F71D0AD3BD00C836B4 /* LocationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F95E3F61D0AD3BD00C836B4 /* LocationCoordinator.swift */; };
@@ -60,7 +62,9 @@
 		2FEEBF041C1078DD002383D1 /* TimeTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeTracker.swift; sourceTree = "<group>"; };
 		2FEEBF051C1078DD002383D1 /* TrackingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingViewController.swift; sourceTree = "<group>"; };
 		2FEEBF151C1079E0002383D1 /* ModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelTest.swift; sourceTree = "<group>"; };
+		4F1A27C91D16D4AB00F96958 /* AppConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
 		4F1D0CC61D140F7C00D6B8B7 /* CLLocation+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CLLocation+Extension.swift"; path = "Extensions/CLLocation+Extension.swift"; sourceTree = "<group>"; };
+		4F1D0CC81D1436C800D6B8B7 /* UIStroyboardSegue+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIStroyboardSegue+Extension.swift"; path = "Extensions/UIStroyboardSegue+Extension.swift"; sourceTree = "<group>"; };
 		4F95E3F11D0AB35400C836B4 /* UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIImage+Extension.swift"; path = "Extensions/UIImage+Extension.swift"; sourceTree = "<group>"; };
 		4F95E3F41D0AD39200C836B4 /* CoreDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
 		4F95E3F61D0AD3BD00C836B4 /* LocationCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationCoordinator.swift; sourceTree = "<group>"; };
@@ -105,6 +109,7 @@
 		2FEEBED51C10784C002383D1 /* Pro-Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				4F1A27C91D16D4AB00F96958 /* AppConfiguration.swift */,
 				2FEEBED61C10784C002383D1 /* AppDelegate.swift */,
 				4F95E3F41D0AD39200C836B4 /* CoreDataStore.swift */,
 				4F95E3F61D0AD3BD00C836B4 /* LocationCoordinator.swift */,
@@ -148,6 +153,7 @@
 		4F95E3F31D0AB36A00C836B4 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				4F1D0CC81D1436C800D6B8B7 /* UIStroyboardSegue+Extension.swift */,
 				4F95E3F11D0AB35400C836B4 /* UIImage+Extension.swift */,
 				4F1D0CC61D140F7C00D6B8B7 /* CLLocation+Extension.swift */,
 			);
@@ -262,6 +268,7 @@
 				2F2049FD1C2C06C900EDADC2 /* CircularSlider.swift in Sources */,
 				2FEEBF0D1C1078DD002383D1 /* Productivity.swift in Sources */,
 				2FEEBF0E1C1078DD002383D1 /* Productivity+CoreDataProperties.swift in Sources */,
+				4F1A27CA1D16D4AB00F96958 /* AppConfiguration.swift in Sources */,
 				4F95E3F21D0AB35400C836B4 /* UIImage+Extension.swift in Sources */,
 				4F1D0CC71D140F7C00D6B8B7 /* CLLocation+Extension.swift in Sources */,
 				2FEEBF111C1078DD002383D1 /* TrackingViewController.swift in Sources */,
@@ -271,6 +278,7 @@
 				2FEEBF0F1C1078DD002383D1 /* ProductivityModel.xcdatamodeld in Sources */,
 				2FEEBF0A1C1078DD002383D1 /* Location.swift in Sources */,
 				2FEEBF0C1C1078DD002383D1 /* MainViewController.swift in Sources */,
+				4F1D0CC91D1436C800D6B8B7 /* UIStroyboardSegue+Extension.swift in Sources */,
 				4F95E3F71D0AD3BD00C836B4 /* LocationCoordinator.swift in Sources */,
 				2FEEBED71C10784C002383D1 /* AppDelegate.swift in Sources */,
 				2FEEBF0B1C1078DD002383D1 /* Location+CoreDataProperties.swift in Sources */,
