@@ -13,7 +13,7 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var intervalSettingsButton: UIButton!
     
-    var locationManager:CLLocationManager!
+    var locationCoordinator:LocationCoordinator!
     var coreDataStore:CoreDataStore!
     var setting = false
     let KEY = "INTERVAL"
@@ -45,14 +45,11 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     }
     
     @IBAction func beginTracking(_ sender: UIButton) {
-        let status  = LocationCoordinator.validateLocationManagerAuthorization()
-        if status == 1 {
-            performSegue(withIdentifier: "SegueTracking", sender: sender)
-        }else if status == -1 {
-            locationManager.requestAlwaysAuthorization()
-            locationManager.delegate = self
+        if locationCoordinator.authorized {
+            locationCoordinator.locationManager.delegate = self
+            performSegue(withIdentifier: .Tracking, sender: nil)
         }else {
-            present(showSettingAlert(), animated: true, completion: nil)
+            present(locationCoordinator.showLocationSettingAlert(), animated: true,completion: nil)
         }
     }
     
@@ -62,14 +59,12 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if LocationCoordinator.validateLocationManagerAuthorization() == 1 {
-            performSegue(withIdentifier: "SegueTracking", sender: startButton)
+            performSegue(withIdentifier: .Tracking, sender: startButton)
         }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController!.navigationBar.barStyle = .black
-        navigationController!.navigationBar.barTintColor = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
         setupStartButton()
         setupWheel()
         containerView.addSubview(startButton)
@@ -83,7 +78,7 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         }
     }
     
-    func setupWheel(){
+    private func setupWheel(){
         slider = CircularSlider(frame: startButton.frame, currentValue: 5, minimumValue: 5, maximumValue: 60 )
         slider.trackWidth = slider.radius/2
         let color = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
@@ -99,12 +94,12 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
             if let destinationViewController = segue.destinationViewController as? TrackingViewController {
                 destinationViewController.intervalToSave = interval
                 destinationViewController.coreDataStore = coreDataStore
-                destinationViewController.locationManager = locationManager
+                destinationViewController.locationManager = locationCoordinator.locationManager
             }
         }
     }
     
-    func setupStartButton(){
+    private func setupStartButton(){
         let length = min(containerView.bounds.width, containerView.bounds.height)/2 + 50
         let x = containerView.bounds.width/2 - length/2
         let y = containerView.bounds.height/2 - length/2
@@ -116,24 +111,11 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         startButton.addTarget(self, action: #selector(beginTracking), for: .touchUpInside)
     }
     
-    func showSettingAlert() -> UIViewController{
-       let LocationAlert =  UIAlertController(title: "Location Services Disabled",
-                                              message: "Enable Location Services in Setting to Continue",
-                                              preferredStyle: .alert)
-        
-        LocationAlert.addAction(UIAlertAction(title: "Settings",
-                                              style: .default,
-                                              handler: { (actionview) -> Void in
-                                                UIApplication.shared().openURL(URL(string:UIApplicationOpenSettingsURLString)!)
-        }))
-        
-        LocationAlert.addAction(UIAlertAction(title: "OK",
-                                              style: .default,
-                                              handler: { (actionview) -> Void in
-                                                LocationAlert.dismiss(animated: true, completion: nil)
-        }))
-        
-        return LocationAlert
-    }
+
 }
 
+extension UIViewController{
+    func performSegue(withIdentifier: UISegueIdentifier, sender: AnyObject?){
+        performSegue(withIdentifier: withIdentifier.rawValue, sender: sender)
+    }
+}
