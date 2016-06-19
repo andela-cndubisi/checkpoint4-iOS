@@ -26,6 +26,7 @@ class TrackingViewController: UIViewController {
     private var currentLocation: CLLocation?
     private let timeTracker = TimeTracker()
     private var backgroundMask:UIView!
+    private let distanceToRestTracker = 10.0
 
     private var recordedLocationsCount = 0 {
         didSet{
@@ -92,8 +93,8 @@ class TrackingViewController: UIViewController {
     func resumeTracker(){
         timeTracker.resume()
 
-        let offset:CGFloat = 30
        UIView.animate(withDuration: 0.15, animations: { _ in
+            let offset:CGFloat = 30
             self.backgroundMask.alpha = 0
             self.pauseButton.alpha = 1
             self.play.frame.origin.x -= self.dimension
@@ -166,15 +167,16 @@ extension TrackingViewController: CLLocationManagerDelegate {
         if currentLocation == nil {
             currentLocation = locations.last!
         }
-        if timeTracker.hasReachedMax(intervalToSave) && !hasSavedLocation {
+        else if timeTracker.hasReachedMax(intervalToSave) && !hasSavedLocation {
             recordedLocationsCount += 1
             hasSavedLocation = true
         }
         
         print("distance", currentLocation!.distance(from: locations.last!))
-        if currentLocation!.distance(from: locations.last!) >= 10 {
+        if currentLocation!.distance(from: locations.last!) >= distanceToRestTracker {
             timeTracker.reset()
             currentLocation = nil
+            hasSavedLocation = false
         }
     }
 }
