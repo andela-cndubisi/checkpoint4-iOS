@@ -81,9 +81,8 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
     private func setupWheel(){
         slider = CircularSlider(frame: startButton.frame, currentValue: 5, minimumValue: 5, maximumValue: 60 )
         slider.trackWidth = slider.radius/2
-        let color = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
-        slider.trackColor = color
-        slider.fillColor = color
+        slider.trackColor = App.color
+        slider.fillColor = App.color
         slider.thumb.strokeColor = .white()
         slider.thumb.fillColor = .white()
         slider.layer.cornerRadius = slider.bounds.width/2
@@ -106,7 +105,7 @@ class MainViewController: UIViewController, UIAlertViewDelegate, CLLocationManag
         
         startButton = UIButton(frame: CGRect(x: x, y: y, width: length, height: length))
         startButton.layer.cornerRadius = startButton.bounds.width / 2
-        startButton.backgroundColor = UIColor(red:  16.0/225, green: 169.0/255, blue: 224.0/255, alpha: 1)
+        startButton.backgroundColor = App.color
         startButton.setImage(UIImage(asset: .PlayButton), for:UIControlState())
         startButton.addTarget(self, action: #selector(beginTracking), for: .touchUpInside)
     }
